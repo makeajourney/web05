@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,6 +22,9 @@ public class MemberAddServlet extends HttpServlet {
 	protected void doGet(
 			HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		RequestDispatcher rd = request.getRequestDispatcher("/member/MemberForm.jsp");
+		rd.forward(request, response);
+		/*
 		response.setContentType("text/html; charset=UTF-8");
 		PrintWriter out = response.getWriter();
 		out.println("<html><head><title>회원 등록</title></head>");
@@ -33,6 +37,7 @@ public class MemberAddServlet extends HttpServlet {
 		out.println("<input type='reset' value='취소'>");
 		out.println("</form>");
 		out.println("</body></html>");
+		*/
 	}
 	
 	@Override
@@ -48,10 +53,7 @@ public class MemberAddServlet extends HttpServlet {
 		try {
 			ServletContext sc = this.getServletContext();
 			Class.forName(sc.getInitParameter("driver"));
-			conn = DriverManager.getConnection(
-						sc.getInitParameter("url"),
-						sc.getInitParameter("username"),
-						sc.getInitParameter("password")); 
+			conn = (Connection) sc.getAttribute("conn");
 			stmt = conn.prepareStatement(
 					"INSERT INTO MEMBERS(EMAIL,PWD,MNAME,CRE_DATE,MOD_DATE)"
 					+ " VALUES (?,?,?,NOW(),NOW())");
@@ -63,11 +65,13 @@ public class MemberAddServlet extends HttpServlet {
 			response.sendRedirect("list");
 			
 		} catch (Exception e) {
-			throw new ServletException(e);
+			// throw new ServletException(e);
+			request.setAttribute("error", e);
+			RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
+			rd.forward(request, response);
 			
 		} finally {
 			try {if (stmt != null) stmt.close();} catch(Exception e) {}
-			try {if (conn != null) conn.close();} catch(Exception e) {}
 		}
 
 	}

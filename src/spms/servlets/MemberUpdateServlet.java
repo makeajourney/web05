@@ -1,13 +1,12 @@
 package spms.servlets;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,9 +14,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@SuppressWarnings("serial")
+import spms.vo.Member;
+
+
 @WebServlet("/member/update")
 public class MemberUpdateServlet extends HttpServlet {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Override
 	protected void doGet(
 			HttpServletRequest request, HttpServletResponse response)
@@ -28,16 +34,29 @@ public class MemberUpdateServlet extends HttpServlet {
 		try {
 			ServletContext sc = this.getServletContext();
 			Class.forName(sc.getInitParameter("driver"));
+			conn = (Connection) sc.getAttribute("conn");
+			/*
 			conn = DriverManager.getConnection(
 						sc.getInitParameter("url"),
 						sc.getInitParameter("username"),
-						sc.getInitParameter("password")); 
+						sc.getInitParameter("password"));
+			*/ 
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery(
 				"SELECT MNO,EMAIL,MNAME,CRE_DATE FROM MEMBERS" + 
 				" WHERE MNO=" + request.getParameter("no"));	
 			rs.next();
 			
+			Member member = new Member()
+					.setNo(rs.getInt("MNO"))
+					.setName(rs.getString("MNAME"))
+					.setEmail(rs.getString("EMAIL"))
+					.setCreatedDate(rs.getDate("CRE_DATE"));
+			request.setAttribute("member", member);
+			
+			RequestDispatcher rd = request.getRequestDispatcher("/member/MemberUpdateForm.jsp");
+			rd.forward(request, response);
+			/*
 			response.setContentType("text/html; charset=UTF-8");
 			PrintWriter out = response.getWriter();
 			out.println("<html><head><title>회원정보</title></head>");
@@ -58,6 +77,7 @@ public class MemberUpdateServlet extends HttpServlet {
 				" onclick='location.href=\"list\"'>");
 			out.println("</form>");
 			out.println("</body></html>");
+			*/
 			
 		} catch (Exception e) {
 			throw new ServletException(e);
@@ -65,7 +85,7 @@ public class MemberUpdateServlet extends HttpServlet {
 		} finally {
 			try {if (rs != null) rs.close();} catch(Exception e) {}
 			try {if (stmt != null) stmt.close();} catch(Exception e) {}
-			try {if (conn != null) conn.close();} catch(Exception e) {}
+			// try {if (conn != null) conn.close();} catch(Exception e) {}
 		}
 	}
 	
@@ -81,10 +101,13 @@ public class MemberUpdateServlet extends HttpServlet {
 		try {
 			ServletContext sc = this.getServletContext();
 			Class.forName(sc.getInitParameter("driver"));
+			conn = (Connection) sc.getAttribute("conn");
+			/*
 			conn = DriverManager.getConnection(
 						sc.getInitParameter("url"),
 						sc.getInitParameter("username"),
-						sc.getInitParameter("password")); 
+						sc.getInitParameter("password"));
+			*/ 
 			stmt = conn.prepareStatement(
 					"UPDATE MEMBERS SET EMAIL=?,MNAME=?,MOD_DATE=now()"
 					+ " WHERE MNO=?");
@@ -96,11 +119,13 @@ public class MemberUpdateServlet extends HttpServlet {
 			response.sendRedirect("list");
 			
 		} catch (Exception e) {
-			throw new ServletException(e);
-			
+			// throw new ServletException(e);
+			request.setAttribute("error", e);
+			RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
+			rd.forward(request, response);
 		} finally {
 			try {if (stmt != null) stmt.close();} catch(Exception e) {}
-			try {if (conn != null) conn.close();} catch(Exception e) {}
+			// try {if (conn != null) conn.close();} catch(Exception e) {}
 		}
 	}
 }

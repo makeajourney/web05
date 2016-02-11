@@ -1,10 +1,7 @@
 package spms.servlets;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -13,6 +10,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import spms.dao.MemberDao;
+import spms.vo.Member;
 
 @WebServlet("/member/add")
 public class MemberAddServlet extends HttpServlet {
@@ -48,19 +48,18 @@ public class MemberAddServlet extends HttpServlet {
 		//request.setCharacterEncoding("UTF-8");
 		
 		Connection conn = null;
-		PreparedStatement stmt = null;
 
 		try {
 			ServletContext sc = this.getServletContext();
-			Class.forName(sc.getInitParameter("driver"));
 			conn = (Connection) sc.getAttribute("conn");
-			stmt = conn.prepareStatement(
-					"INSERT INTO MEMBERS(EMAIL,PWD,MNAME,CRE_DATE,MOD_DATE)"
-					+ " VALUES (?,?,?,NOW(),NOW())");
-			stmt.setString(1, request.getParameter("email"));
-			stmt.setString(2, request.getParameter("password"));
-			stmt.setString(3, request.getParameter("name"));
-			stmt.executeUpdate();
+
+			MemberDao memberDao = new MemberDao();
+			memberDao.setConnection(conn);
+			
+			memberDao.insert(new Member()
+					.setEmail(request.getParameter("email"))
+					.setPassword(request.getParameter("password"))
+					.setName(request.getParameter("name")));
 			
 			response.sendRedirect("list");
 			
@@ -69,10 +68,6 @@ public class MemberAddServlet extends HttpServlet {
 			request.setAttribute("error", e);
 			RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
 			rd.forward(request, response);
-			
-		} finally {
-			try {if (stmt != null) stmt.close();} catch(Exception e) {}
 		}
-
 	}
 }

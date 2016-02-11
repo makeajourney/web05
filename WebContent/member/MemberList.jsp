@@ -17,7 +17,7 @@
 		${member.no },
 		<a href='update?no=${member.no }'>${member.name }</a>,
 		${member.email },
-		${member.createDate }
+		${member.createdDate }
 		<a href='delete?no=${member.no }'>[delete]</a><br>
 		</c:forEach>
 		<jsp:include page="/Tail.jsp"></jsp:include>

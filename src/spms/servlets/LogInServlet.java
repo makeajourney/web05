@@ -32,15 +32,13 @@ public class LogInServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		Connection conn = null;
+
 		Member member = null;
 		
 		try {
 			ServletContext sc = this.getServletContext();
-			conn = (Connection) sc.getAttribute("conn");
-			
-			MemberDao memberDao = new MemberDao();
-			memberDao.setConnection(conn);
+
+			MemberDao memberDao = (MemberDao) sc.getAttribute("memberDao");
 			
 			member = memberDao.exist(request.getParameter("email"), request.getParameter("password"));
 			

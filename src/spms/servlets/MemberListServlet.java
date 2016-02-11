@@ -21,9 +21,9 @@ public class MemberListServlet extends HttpServlet {
 	public void doGet(
 			HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		Connection conn = null;
 		
 		/*
+		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
 		*/
@@ -37,10 +37,10 @@ public class MemberListServlet extends HttpServlet {
 						sc.getInitParameter("username"),
 						sc.getInitParameter("password"));
 			*/
-			conn = (Connection) sc.getAttribute("conn");
+			// conn = (Connection) sc.getAttribute("conn");
 			
-			MemberDao memberDao = new MemberDao();
-			memberDao.setConnection(conn);
+			MemberDao memberDao = (MemberDao) sc.getAttribute("memberDao");
+			// memberDao.setConnection(conn);
 			
 			/*
 			stmt = conn.createStatement();

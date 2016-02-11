@@ -47,14 +47,10 @@ public class MemberAddServlet extends HttpServlet {
 		// CharacterEncodingFilter에서 처리
 		//request.setCharacterEncoding("UTF-8");
 		
-		Connection conn = null;
-
 		try {
 			ServletContext sc = this.getServletContext();
-			conn = (Connection) sc.getAttribute("conn");
-
-			MemberDao memberDao = new MemberDao();
-			memberDao.setConnection(conn);
+		
+			MemberDao memberDao = (MemberDao) sc.getAttribute("memberDao");
 			
 			memberDao.insert(new Member()
 					.setEmail(request.getParameter("email"))

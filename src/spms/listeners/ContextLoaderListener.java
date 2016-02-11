@@ -6,9 +6,11 @@ import java.sql.DriverManager;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 
 import spms.dao.MemberDao;
 
+@WebListener
 public class ContextLoaderListener implements ServletContextListener{
 
 	Connection conn;

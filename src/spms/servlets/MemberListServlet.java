@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import spms.dao.MemberDao;
 
+// front controller 적용 
 @WebServlet("/member/list")
 public class MemberListServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -86,19 +87,22 @@ public class MemberListServlet extends HttpServlet {
 			//request.setAttribute("members", members);
 			
 			request.setAttribute("members", memberDao.selectList());
-			response.setContentType("text/html; charset=UTF-8");
+//			response.setContentType("text/html; charset=UTF-8");
+			
+			request.setAttribute("viewUrl", "/member/MemberList.jsp");
 			
 			// jsp 로 출력을 위임한다.
-			RequestDispatcher rd = request.getRequestDispatcher(
-					"/member/MemberList.jsp");
-			rd.include(request, response);
+//			RequestDispatcher rd = request.getRequestDispatcher(
+//					"/member/MemberList.jsp");
+//			rd.include(request, response);
 			
 		} catch (Exception e) {
 			// throw new ServletException(e);
-			e.printStackTrace();
-			request.setAttribute("error", e);
-			RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
-			rd.forward(request, response);
+			throw new ServletException(e);
+//			e.printStackTrace();
+//			request.setAttribute("error", e);
+//			RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
+//			rd.forward(request, response);
 			
 		}/* finally {
 			try {if (rs != null) rs.close();} catch(Exception e) {}

@@ -4,7 +4,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<meta http-equiv="Refresh" content="1;url=login">
+		<meta http-equiv="Refresh" content="1;url=login.do">
 		<title>login fail</title>
 	</head>
 	<body>

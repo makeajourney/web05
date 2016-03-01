@@ -25,8 +25,10 @@ public class LogInServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		RequestDispatcher rd = request.getRequestDispatcher("/auth/LogInForm.jsp");
-		rd.forward(request, response);
+		request.setAttribute("viewUrl", "/auth/LogInForm.jsp");
+		
+//		RequestDispatcher rd = request.getRequestDispatcher("/auth/LogInForm.jsp");
+//		rd.forward(request, response);
 	}
 	
 	@Override
@@ -46,11 +48,15 @@ public class LogInServlet extends HttpServlet {
 				HttpSession session = request.getSession();
 				session.setAttribute("member", member);
 				
-				response.sendRedirect("../member/list");
+				request.setAttribute("viewUrl", "redirect:../member/list.do");
+				
+//				response.sendRedirect("../member/list");
 			}
 			else {
-				RequestDispatcher rd = request.getRequestDispatcher("/auth/LogInFail.jsp");
-				rd.forward(request, response);
+				request.setAttribute("viewUrl", "/auth/LogInFail.jsp");
+				
+//				RequestDispatcher rd = request.getRequestDispatcher("/auth/LogInFail.jsp");
+//				rd.forward(request, response);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception

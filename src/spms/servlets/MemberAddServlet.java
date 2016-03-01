@@ -22,8 +22,10 @@ public class MemberAddServlet extends HttpServlet {
 	protected void doGet(
 			HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		RequestDispatcher rd = request.getRequestDispatcher("/member/MemberForm.jsp");
-		rd.forward(request, response);
+		request.setAttribute("viewUrl", "/member/MemberForm.jsp");
+		
+//		RequestDispatcher rd = request.getRequestDispatcher("/member/MemberForm.jsp");
+//		rd.forward(request, response);
 		/*
 		response.setContentType("text/html; charset=UTF-8");
 		PrintWriter out = response.getWriter();
@@ -51,19 +53,24 @@ public class MemberAddServlet extends HttpServlet {
 			ServletContext sc = this.getServletContext();
 		
 			MemberDao memberDao = (MemberDao) sc.getAttribute("memberDao");
+		
+			Member member = (Member) request.getAttribute("member");
+			memberDao.insert(member);
 			
-			memberDao.insert(new Member()
-					.setEmail(request.getParameter("email"))
-					.setPassword(request.getParameter("password"))
-					.setName(request.getParameter("name")));
+//			memberDao.insert(new Member()
+//					.setEmail(request.getParameter("email"))
+//					.setPassword(request.getParameter("password"))
+//					.setName(request.getParameter("name")));
 			
-			response.sendRedirect("list");
+			request.setAttribute("viewUrl", "redirect:list.do");
+			
+//			response.sendRedirect("list");
 			
 		} catch (Exception e) {
-			// throw new ServletException(e);
-			request.setAttribute("error", e);
-			RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
-			rd.forward(request, response);
+			throw new ServletException(e);
+//			request.setAttribute("error", e);
+//			RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
+//			rd.forward(request, response);
 		}
 	}
 }
